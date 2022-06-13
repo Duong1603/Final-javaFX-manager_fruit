@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class DBConnection {
     private Connection connection;
 
-    public static final String URL = "jdbc:mysql://localhost/manager-fruit";
+    public static final String URL = "jdbc:mysql://localhost/manage_fruit";
     public static final String USERNAME = "root";
     public static final String PASSWORD = "";
 

@@ -9,18 +9,23 @@ My project:
 1. Use maven connect library Mysql
 
   ![image](https://user-images.githubusercontent.com/100500013/173484089-f1cebe78-6cc0-4240-b076-124d19ad7a6e.png)
+  
 2. Project structure
 
   ![image](https://user-images.githubusercontent.com/100500013/173484026-1a47c878-75cd-4a14-8715-3425c3648716.png)
+  
 3. Connect MySQL with java.sql
 
   ![image](https://user-images.githubusercontent.com/100500013/173484150-1f73e202-c1c3-4c96-9c20-4cdc6647423c.png)
+  
 4. Get data from mysql to array
 
   ![image](https://user-images.githubusercontent.com/100500013/173484361-db1aef61-ffca-44df-9187-efa2bc5ef359.png)
+  
 5. Database structure
 
  ![image](https://user-images.githubusercontent.com/100500013/173481423-cef17f56-0262-4a36-a4d9-b6f05c95158e.png)
+ 
 6. Task finished
   - Show product has in the database admin page.
   - Add new product.

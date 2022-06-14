@@ -1,8 +1,10 @@
 # Final-javaFX-manager_fruit
 Link video demo: 
 https://drive.google.com/drive/folders/1C9vV16jne2rPcnoOW0i96N_zAVPAV8O-?usp=sharing
-**My project:**
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+My project:
 ![image](https://user-images.githubusercontent.com/100500013/173484735-d9918b73-eb27-4399-83c0-7cf12c74e0c4.png)
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 1. Use maven connect library Mysql
   ![image](https://user-images.githubusercontent.com/100500013/173484089-f1cebe78-6cc0-4240-b076-124d19ad7a6e.png)
 2. Project structure

@@ -1,5 +1,6 @@
 package com.example.javafxproject.data;
 
+import com.example.javafxproject.data.models.Admin;
 import com.example.javafxproject.data.models.Fruit;
 
 import java.sql.*;
@@ -33,7 +34,7 @@ public class DBConnection {
                         results.getFloat("price"),
                         results.getString("typefruit"),
                         results.getString("image")
-                                        );
+                );
                 list.add(fruit);
             }
         } catch (SQLException e) {
@@ -66,5 +67,25 @@ public class DBConnection {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    //conect with database Admin
+    public ArrayList<Admin> getAdmin() {
+        ArrayList<Admin> admins = new ArrayList<>();
+        try {
+            var result = this.connection.prepareStatement("Select * from admin").executeQuery();
+            while (result.next()) {
+                int id = result.getInt("id");
+                String name = result.getString("username");
+                String password = result.getString("pass");
+                System.out.println(id);
+                System.out.println(name);
+                System.out.println(password);
+                admins.add(new Admin(id, name, password));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return admins;
     }
 }

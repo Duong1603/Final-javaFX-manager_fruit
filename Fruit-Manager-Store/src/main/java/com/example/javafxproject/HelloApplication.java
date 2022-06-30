@@ -1,42 +1,55 @@
 package com.example.javafxproject;
 
 import com.example.javafxproject.data.DBConnection;
+import com.example.javafxproject.data.models.Admin;
 import com.example.javafxproject.data.models.Fruit;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.security.cert.PolicyNode;
 import java.util.ArrayList;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class HelloApplication extends Application {
 
-    private Scene scene;
+    private Scene scene, screenLogin,screenregister;
+    TextField name, pass;
     private static final String EMPTY = "";
+    private Stage window;
 
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage primaryStage) {
 
-
+        DBConnection conn = new DBConnection();
+        VBox loginPage = new VBox();
+        this.showLogin(loginPage, conn);
 
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setVgap(10);
         grid.setHgap(10);
-        DBConnection DB = new DBConnection();
 
-        ArrayList<Fruit> FruitList = DB.getFruit();
+
+        this.hompage(conn, grid, primaryStage);
+        screenLogin = new Scene(loginPage, 400, 400);
+        scene = new Scene(grid, 1000, 700);
+        primaryStage.setTitle("Product icons table");
+        window = primaryStage;
+        window.setScene(screenLogin);
+        window.show();
+    }
+
+    void hompage(DBConnection conn, GridPane grid, Stage primaryStage){
+        ArrayList<Fruit> FruitList = conn.getFruit();
 
         grid.add(new Label("Name:"), 0, 0);
         var tfName = new TextField();
@@ -69,9 +82,10 @@ public class HelloApplication extends Application {
             String typefruit = tfTypefruit.getText();
             Integer quality = Integer.valueOf(tfQuality.getText());
             if (!name.equals(EMPTY) && !image.equals(EMPTY) && !price.equals(EMPTY) && !typefruit.equals(EMPTY) && !quality.equals(EMPTY)) {
-                DB.Add(new Fruit(name,quality, price, typefruit,image));
+                conn.Add(new Fruit(name,quality, price, typefruit,image));
                 try {
-                    start(stage);
+                    start(primaryStage);
+                    window.setScene(scene);
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
@@ -125,9 +139,10 @@ public class HelloApplication extends Application {
                     String Newtypefruit = tfTypefruit.getText();
                     Integer Newquality = Integer.valueOf(tfquality.getText());
                     if (!Newname.equals(EMPTY) && !Newimage.equals(EMPTY) && !Newprice.equals(EMPTY) && !Newtypefruit.equals(EMPTY) && !Newquality.equals(EMPTY)) {
-                        DB.Update(new Fruit(Newid, Newname,Newquality, Newprice, Newtypefruit, Newimage));
+                        conn.Update(new Fruit(Newid, Newname,Newquality, Newprice, Newtypefruit, Newimage));
                         try {
-                            start(stage);
+                            start(primaryStage);
+                            window.setScene(scene);
                         } catch (Exception ex) {
                             throw new RuntimeException(ex);
                         }
@@ -148,25 +163,112 @@ public class HelloApplication extends Application {
             btnDelete.setId(String.valueOf(FruitList.get(i).id));
             btnDelete.setOnAction(e -> {
                 int iddelete = Integer.parseInt(btnDelete.getId());
-                DB.Delete(iddelete);
+                conn.Delete(iddelete);
                 var alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setHeaderText(null);
                 alert.setContentText("Deleted!");
                 alert.showAndWait();
                 try {
-                    start(stage);
+                    start(primaryStage);
+                    window.setScene(scene);
                 } catch (Exception ex) {
                     throw new RuntimeException(ex);
                 }
             });
             grid.add(btnDelete, 6, i+2);
         }
-
-        scene = new Scene(grid, 1000, 700);
-        stage.setTitle("Product icons table");
-        stage.setScene(scene);
-        stage.show();
     }
 
+//    private GridPane createRegistrationFormPane() {
+//        // Instantiate a new Grid Pane
+//        GridPane gridPane = new GridPane();
+//
+//        // Position the pane at the center of the screen, both vertically and horizontally
+//        gridPane.setAlignment(Pos.CENTER);
+//
+//        // Set a padding of 20px on each side
+//        gridPane.setPadding(new Insets(40, 40, 40, 40));
+//
+//        // Set the horizontal gap between columns
+//        gridPane.setHgap(10);
+//
+//        // Set the vertical gap between rows
+//        gridPane.setVgap(10);
+//
+//        // Add Column Constraints
+//
+//        // columnOneConstraints will be applied to all the nodes placed in column one.
+//        ColumnConstraints columnOneConstraints = new ColumnConstraints(100, 100, Double.MAX_VALUE);
+//        columnOneConstraints.setHalignment(HPos.RIGHT);
+//
+//        // columnTwoConstraints will be applied to all the nodes placed in column two.
+//        ColumnConstraints columnTwoConstrains = new ColumnConstraints(200,200, Double.MAX_VALUE);
+//        columnTwoConstrains.setHgrow(Priority.ALWAYS);
+//
+//        gridPane.getColumnConstraints().addAll(columnOneConstraints, columnTwoConstrains);
+//
+//        return gridPane;
+//    }
 
+
+    // SHOW LOGIN
+    void  showLogin(VBox loginPage , DBConnection conn){
+        Label labelLogin =new Label("LOGIN");
+        Label Aname = new Label("Name: ");
+        Label Apassword = new Label("Password: ");
+        name = new TextField();
+        pass= new TextField();
+        HBox fieldName = new HBox();
+        fieldName.getChildren().addAll(Aname,name);
+        fieldName.setSpacing(10);
+        fieldName.setAlignment(Pos.BASELINE_CENTER);
+        HBox fieldPass = new HBox();
+        fieldPass.getChildren().addAll(Apassword,pass);
+        fieldPass.setSpacing(10);
+        fieldPass.setAlignment(Pos.BASELINE_CENTER);
+        Button btnGoBack = new Button("Register");
+        btnGoBack.setOnAction(actionEvent -> {
+            window.setScene(screenregister);
+        });
+        Button btnLogin = new Button("LOGIN");
+        btnLogin.setOnAction(actionEvent -> {
+            this.checkLogin(conn);
+        });
+        HBox btnLoginPage = new HBox();
+        btnLoginPage.getChildren().addAll(btnLogin,btnGoBack);
+        btnLoginPage.setSpacing(10);
+        btnLoginPage.setAlignment(Pos.BASELINE_CENTER);
+        loginPage.getChildren().addAll(labelLogin,fieldName,fieldPass,btnLoginPage);
+        loginPage.setSpacing(15);
+        loginPage.setAlignment(Pos.BASELINE_CENTER);
+    }
+
+    // CHECK LOGIN
+    void checkLogin(DBConnection db){
+        ArrayList<Admin> ad = new ArrayList<Admin>();
+        ad = (ArrayList<Admin>) db.getAdmin();
+        String inputName = name.getText();
+        String inputPass = pass.getText();
+        if(inputName.equals(ad.get(0).name)&& inputPass.equals(ad.get(0).password)){
+            LoginSuccess();
+            window.setScene(scene);
+        }else{
+            LoginError();
+        }
+    }
+
+    //CHECK SUCCESS OR ERROR
+    private void LoginSuccess() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Login");
+        alert.setHeaderText("Hi "+name.getText());
+        alert.setContentText("Login successfully!");
+        alert.show();
+    }
+    private void LoginError() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("ERROR");
+        alert.setContentText("Login fail!");
+        alert.show();
+    }
 }

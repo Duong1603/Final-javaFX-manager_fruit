@@ -5,6 +5,7 @@ import com.example.javafxproject.data.models.Admin;
 import com.example.javafxproject.data.models.Fruit;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -25,29 +26,6 @@ public class HelloApplication extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
-    @Override
-    public void start(Stage primaryStage) {
-
-        DBConnection conn = new DBConnection();
-        VBox loginPage = new VBox();
-        this.showLogin(loginPage, conn);
-
-        GridPane grid = new GridPane();
-        grid.setAlignment(Pos.CENTER);
-        grid.setVgap(10);
-        grid.setHgap(10);
-
-
-        this.hompage(conn, grid, primaryStage);
-        screenLogin = new Scene(loginPage, 400, 400);
-        scene = new Scene(grid, 1000, 700);
-        primaryStage.setTitle("Product icons table");
-        window = primaryStage;
-        window.setScene(screenLogin);
-        window.show();
-    }
-
     void hompage(DBConnection conn, GridPane grid, Stage primaryStage){
         ArrayList<Fruit> FruitList = conn.getFruit();
 
@@ -106,11 +84,12 @@ public class HelloApplication extends Application {
             imageView.setFitWidth(110);
             imageView.setFitHeight(110);
 
-            grid.add(new Label (FruitList.get(i).getName()), 0, i+2);
-            grid.add(imageView, 1, i+2);
-            grid.add(new Label ("$"+(FruitList.get(i).getPrice())), 2, i+2);
-            grid.add(new Label (FruitList.get(i).getTypefruit()), 3, i+2);
-            grid.add(new Label (""+FruitList.get(i).getQuality()), 4, i+2);
+            grid.add(new Label (""+FruitList.get(i).getId()), 0, i+2);
+            grid.add(new Label (FruitList.get(i).getName()), 1, i+2);
+            grid.add(imageView, 2, i+2);
+            grid.add(new Label ("$"+(FruitList.get(i).getPrice())), 3, i+2);
+            grid.add(new Label (FruitList.get(i).getTypefruit()), 4, i+2);
+            grid.add(new Label (""+FruitList.get(i).getQuality()), 5, i+2);
 
             // Update
             var btnUpdate = new Button("Update");
@@ -155,7 +134,7 @@ public class HelloApplication extends Application {
                 });
                 grid.add(newbtnAdd, 5, 1);
             });
-            grid.add(btnUpdate, 5, i+2);
+            grid.add(btnUpdate, 6, i+2);
 
             // Delete
             var btnDelete = new Button("Delete");
@@ -175,7 +154,7 @@ public class HelloApplication extends Application {
                     throw new RuntimeException(ex);
                 }
             });
-            grid.add(btnDelete, 6, i+2);
+            grid.add(btnDelete, 7, i+2);
         }
     }
 
@@ -220,7 +199,7 @@ public class HelloApplication extends Application {
         pass= new TextField();
         HBox fieldName = new HBox();
         fieldName.getChildren().addAll(Aname,name);
-        fieldName.setSpacing(10);
+        fieldName.setSpacing(25);
         fieldName.setAlignment(Pos.BASELINE_CENTER);
         HBox fieldPass = new HBox();
         fieldPass.getChildren().addAll(Apassword,pass);
@@ -245,7 +224,7 @@ public class HelloApplication extends Application {
 
     // CHECK LOGIN
     void checkLogin(DBConnection db){
-        ArrayList<Admin> ad = new ArrayList<Admin>();
+        ArrayList<Admin> ad = new ArrayList<>();
         ad = (ArrayList<Admin>) db.getAdmin();
         String inputName = name.getText();
         String inputPass = pass.getText();
@@ -270,5 +249,34 @@ public class HelloApplication extends Application {
         alert.setTitle("ERROR");
         alert.setContentText("Login fail!");
         alert.show();
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+
+        DBConnection conn = new DBConnection();
+        VBox loginPage = new VBox();
+        this.showLogin(loginPage, conn);
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setVgap(10);
+        grid.setHgap(10);
+
+        this.hompage(conn, grid, primaryStage);
+        ScrollPane scrollPane = new ScrollPane(grid);
+        // Setting a horizontal scroll bar is always display
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        // Setting vertical scroll bar is never displayed.
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setContent(grid);
+
+        screenLogin = new Scene(loginPage, 400, 400);
+
+        scene = new Scene(scrollPane, 1000, 600);
+        primaryStage.setTitle("Product icons table");
+        window = primaryStage;
+        window.setScene(screenLogin);
+        window.show();
+
     }
 }

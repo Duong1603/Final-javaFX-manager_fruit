@@ -5,11 +5,11 @@ import com.example.javafxproject.data.models.Admin;
 import com.example.javafxproject.data.models.Fruit;
 import javafx.application.Application;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import javafx.scene.image.ImageView;
 
 public class HelloApplication extends Application {
 
-    private Scene scene, screenLogin,screenregister;
+    private Scene scene, screenLogin,navigationButton, home;
     TextField name, pass;
     private static final String EMPTY = "";
     private Stage window;
@@ -26,7 +26,7 @@ public class HelloApplication extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    void hompage(DBConnection conn, GridPane grid, Stage primaryStage){
+    void hompage(DBConnection conn, GridPane grid, Stage primaryStage) {
         ArrayList<Fruit> FruitList = conn.getFruit();
 
         grid.add(new Label("Name:"), 0, 0);
@@ -41,11 +41,11 @@ public class HelloApplication extends Application {
         var tfPrice = new TextField();
         grid.add(tfPrice, 2, 1);
         //
-        grid.add(new Label("Type Fruit:"),3,  0);
+        grid.add(new Label("Type Fruit:"), 3, 0);
         var tfTypefruit = new TextField();
         grid.add(tfTypefruit, 3, 1);
         //
-        grid.add(new Label("Quality:"),4,  0);
+        grid.add(new Label("Quality:"), 4, 0);
         var tfQuality = new TextField();
         grid.add(tfQuality, 4, 1);
         //
@@ -60,7 +60,7 @@ public class HelloApplication extends Application {
             String typefruit = tfTypefruit.getText();
             Integer quality = Integer.valueOf(tfQuality.getText());
             if (!name.equals(EMPTY) && !image.equals(EMPTY) && !price.equals(EMPTY) && !typefruit.equals(EMPTY) && !quality.equals(EMPTY)) {
-                conn.Add(new Fruit(name,quality, price, typefruit,image));
+                conn.Add(new Fruit(name, quality, price, typefruit, image));
                 try {
                     start(primaryStage);
                     window.setScene(scene);
@@ -77,19 +77,19 @@ public class HelloApplication extends Application {
         grid.add(btnAdd, 5, 1);
 
         //show
-        for(int i = 0; i < FruitList.size(); i++){
+        for (int i = 0; i < FruitList.size(); i++) {
             Image image = new Image(FruitList.get(i).getImage());
             ImageView imageView = new ImageView();
             imageView.setImage(image);
             imageView.setFitWidth(110);
             imageView.setFitHeight(110);
 
-            grid.add(new Label (""+FruitList.get(i).getId()), 0, i+2);
-            grid.add(new Label (FruitList.get(i).getName()), 1, i+2);
-            grid.add(imageView, 2, i+2);
-            grid.add(new Label ("$"+(FruitList.get(i).getPrice())), 3, i+2);
-            grid.add(new Label (FruitList.get(i).getTypefruit()), 4, i+2);
-            grid.add(new Label (""+FruitList.get(i).getQuality()), 5, i+2);
+            grid.add(new Label("" + FruitList.get(i).getId()), 1, i + 2);
+            grid.add(new Label(FruitList.get(i).getName()), 2, i + 2);
+            grid.add(imageView, 3, i + 2);
+            grid.add(new Label("$" + (FruitList.get(i).getPrice())), 4, i + 2);
+            grid.add(new Label(FruitList.get(i).getTypefruit()), 5, i + 2);
+            grid.add(new Label("" + FruitList.get(i).getQuality()), 6, i + 2);
 
             // Update
             var btnUpdate = new Button("Update");
@@ -101,7 +101,6 @@ public class HelloApplication extends Application {
                 tfname.setText("" + FruitList.get(finali).getName());
                 TextField tfimage = (TextField) grid.getChildren().get(3);
                 tfimage.setText("" + FruitList.get(finali).getImage());
-//                name.setText(stdList.get(Integer.parseInt(btnUpdate.getId())).getName());
                 TextField tfprice = (TextField) grid.getChildren().get(5);
                 tfprice.setText("" + FruitList.get(finali).getPrice());
                 TextField tftypecake = (TextField) grid.getChildren().get(7);
@@ -118,7 +117,7 @@ public class HelloApplication extends Application {
                     String Newtypefruit = tfTypefruit.getText();
                     Integer Newquality = Integer.valueOf(tfquality.getText());
                     if (!Newname.equals(EMPTY) && !Newimage.equals(EMPTY) && !Newprice.equals(EMPTY) && !Newtypefruit.equals(EMPTY) && !Newquality.equals(EMPTY)) {
-                        conn.Update(new Fruit(Newid, Newname,Newquality, Newprice, Newtypefruit, Newimage));
+                        conn.Update(new Fruit(Newid, Newname, Newquality, Newprice, Newtypefruit, Newimage));
                         try {
                             start(primaryStage);
                             window.setScene(scene);
@@ -132,9 +131,9 @@ public class HelloApplication extends Application {
                     alert.setContentText("Please fill all blank!");
                     alert.showAndWait();
                 });
-                grid.add(newbtnAdd, 5, 1);
+                grid.add(newbtnAdd, 6, 1);
             });
-            grid.add(btnUpdate, 6, i+2);
+            grid.add(btnUpdate, 9, i + 2);
 
             // Delete
             var btnDelete = new Button("Delete");
@@ -154,41 +153,17 @@ public class HelloApplication extends Application {
                     throw new RuntimeException(ex);
                 }
             });
-            grid.add(btnDelete, 7, i+2);
+            grid.add(btnDelete, 10, i + 2);
         }
+        //button back
+        Button btnGoBack = new Button("Back");
+        btnGoBack.setPadding(new Insets(5, 15, 5, 15));
+        btnGoBack.setOnAction(actionEvent -> {
+            window.setScene(navigationButton);
+            window.centerOnScreen();
+        });
+        grid.add(btnGoBack,12,0);
     }
-
-//    private GridPane createRegistrationFormPane() {
-//        // Instantiate a new Grid Pane
-//        GridPane gridPane = new GridPane();
-//
-//        // Position the pane at the center of the screen, both vertically and horizontally
-//        gridPane.setAlignment(Pos.CENTER);
-//
-//        // Set a padding of 20px on each side
-//        gridPane.setPadding(new Insets(40, 40, 40, 40));
-//
-//        // Set the horizontal gap between columns
-//        gridPane.setHgap(10);
-//
-//        // Set the vertical gap between rows
-//        gridPane.setVgap(10);
-//
-//        // Add Column Constraints
-//
-//        // columnOneConstraints will be applied to all the nodes placed in column one.
-//        ColumnConstraints columnOneConstraints = new ColumnConstraints(100, 100, Double.MAX_VALUE);
-//        columnOneConstraints.setHalignment(HPos.RIGHT);
-//
-//        // columnTwoConstraints will be applied to all the nodes placed in column two.
-//        ColumnConstraints columnTwoConstrains = new ColumnConstraints(200,200, Double.MAX_VALUE);
-//        columnTwoConstrains.setHgrow(Priority.ALWAYS);
-//
-//        gridPane.getColumnConstraints().addAll(columnOneConstraints, columnTwoConstrains);
-//
-//        return gridPane;
-//    }
-
 
     // SHOW LOGIN
     void  showLogin(VBox loginPage , DBConnection conn){
@@ -205,16 +180,16 @@ public class HelloApplication extends Application {
         fieldPass.getChildren().addAll(Apassword,pass);
         fieldPass.setSpacing(10);
         fieldPass.setAlignment(Pos.BASELINE_CENTER);
-        Button btnGoBack = new Button("Register");
-        btnGoBack.setOnAction(actionEvent -> {
-            window.setScene(screenregister);
-        });
+//        Button btnGoBack = new Button("Register");
+//        btnGoBack.setOnAction(actionEvent -> {
+//            window.setScene(screenregister);
+//        });
         Button btnLogin = new Button("LOGIN");
         btnLogin.setOnAction(actionEvent -> {
             this.checkLogin(conn);
         });
         HBox btnLoginPage = new HBox();
-        btnLoginPage.getChildren().addAll(btnLogin,btnGoBack);
+        btnLoginPage.getChildren().addAll(btnLogin);
         btnLoginPage.setSpacing(10);
         btnLoginPage.setAlignment(Pos.BASELINE_CENTER);
         loginPage.getChildren().addAll(labelLogin,fieldName,fieldPass,btnLoginPage);
@@ -230,7 +205,7 @@ public class HelloApplication extends Application {
         String inputPass = pass.getText();
         if(inputName.equals(ad.get(0).name)&& inputPass.equals(ad.get(0).password)){
             LoginSuccess();
-            window.setScene(scene);
+            window.setScene(navigationButton);
         }else{
             LoginError();
         }
@@ -251,28 +226,116 @@ public class HelloApplication extends Application {
         alert.show();
     }
 
+    // choose page
+    void navigationButton( VBox sceneNavigationButton) {
+        GridPane goAdmin = new GridPane();
+        GridPane goHome = new GridPane();
+        GridPane goHomeAdmin = new GridPane();
+        goHomeAdmin.setAlignment(Pos.CENTER);
+        Button btnGoAdmin = new Button("GO ADMIN");
+        btnGoAdmin.setPadding(new Insets(15, 25, 15, 25));
+        btnGoAdmin.setOnAction(actionEvent -> {
+            window.setScene(scene);
+            window.centerOnScreen();
+        });
+        Button btnGoHome = new Button("GO Home");
+        btnGoHome.setPadding(new Insets(15, 25, 15, 25));
+        btnGoHome.setOnAction(actionEvent -> {
+            window.setScene(home);
+            window.centerOnScreen();
+        });
+        GridPane gridAdmin = new GridPane();
+        gridAdmin.getChildren().addAll(btnGoAdmin);
+
+        GridPane btnHome = new GridPane();
+        btnHome.getChildren().add(btnGoHome);
+
+        goAdmin.add(gridAdmin, 5, 3);
+
+        goHome.add(btnHome, 10, 3);
+
+        goHomeAdmin.add( goHome,5,3);
+        goHomeAdmin.add( goAdmin,10,3);
+        sceneNavigationButton.getChildren().addAll(goHomeAdmin,goAdmin,goHome,btnGoAdmin,btnHome,btnGoHome);
+
+    }
+    // Homepage
+    void home( VBox sceneHome) {
+        Button btnGoBack = new Button("Back");
+        btnGoBack.setPadding(new Insets(5, 15, 5, 15));
+        btnGoBack.setOnAction(actionEvent -> {
+            window.setScene(navigationButton);
+            window.centerOnScreen();
+        });
+        GridPane home = new GridPane();
+        GridPane grid = new GridPane();
+        GridPane goBack = new GridPane();
+        GridPane btnBack = new GridPane();
+        btnBack.getChildren().addAll(btnGoBack);
+        goBack.add(btnBack, 2, 0);
+        home.add( goBack,2,0);
+        grid.setAlignment(Pos.TOP_CENTER);
+        grid.setVgap(10);
+        grid.setHgap(10);
+        DBConnection DB = new DBConnection();
+        ArrayList<Fruit> fruitList = DB.getFruit();
+        grid.add(new Label("WELLCOM TO FRIUT STORE"), 30, 0);
+
+        //show
+        for(int i = 0; i < fruitList.size(); i++){
+
+            var btnBuy = new Button("Buy Now");
+            Image image = new Image(fruitList.get(i).getImage());
+            ImageView imageView = new ImageView();
+            imageView.setImage(image);
+            imageView.setFitWidth(150);
+            imageView.setFitHeight(150);
+            Text textName = new Text(fruitList.get(i).getName());
+
+            grid.add(imageView, 10, i+1);
+            grid.add((textName), 15, i+1);
+            grid.add(new Label ("Quality: "+String.valueOf(fruitList.get(i).getQuality())), 20, i+1);
+            grid.add(new Label ("Price: $"+String.valueOf(fruitList.get(i).getPrice())), 30, i+1);
+            grid.add((btnBuy), 50, i+1);
+        }
+        home.getChildren().add(grid);
+        ScrollPane scrollHome = new ScrollPane(grid);
+        scrollHome.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        scrollHome.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollHome.setContent(grid);
+        sceneHome.getChildren().addAll(home,scrollHome,btnGoBack,goBack);
+    }
+
+    // Start program
     @Override
     public void start(Stage primaryStage) {
 
         DBConnection conn = new DBConnection();
         VBox loginPage = new VBox();
-        this.showLogin(loginPage, conn);
+        VBox sceneNavigationButton = new VBox();
+        VBox sceneHome= new VBox();
+
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setVgap(10);
         grid.setHgap(10);
 
+        this.home(sceneHome);
+        this.navigationButton(sceneNavigationButton);
+        this.showLogin(loginPage, conn);
         this.hompage(conn, grid, primaryStage);
-        ScrollPane scrollPane = new ScrollPane(grid);
+
+        ScrollPane scrollHomepage = new ScrollPane(grid);
         // Setting a horizontal scroll bar is always display
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        scrollHomepage.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         // Setting vertical scroll bar is never displayed.
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setContent(grid);
+        scrollHomepage.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollHomepage.setContent(grid);
 
+        scene = new Scene(scrollHomepage, 1200, 600);
+        home = new Scene(sceneHome, 1200,600);
+        navigationButton = new Scene(sceneNavigationButton, 400, 400);
         screenLogin = new Scene(loginPage, 400, 400);
-
-        scene = new Scene(scrollPane, 1000, 600);
         primaryStage.setTitle("Product icons table");
         window = primaryStage;
         window.setScene(screenLogin);

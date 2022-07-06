@@ -244,6 +244,12 @@ public class HelloApplication extends Application {
             window.setScene(home);
             window.centerOnScreen();
         });
+        Button btnLogout = new Button("LOGOUT   ");
+        btnLogout.setPadding(new Insets(15, 25, 15, 25));
+        btnLogout.setOnAction(actionEvent -> {
+            window.setScene(screenLogin);
+            window.centerOnScreen();
+        });
         GridPane gridAdmin = new GridPane();
         gridAdmin.getChildren().addAll(btnGoAdmin);
 
@@ -256,7 +262,7 @@ public class HelloApplication extends Application {
 
         goHomeAdmin.add( goHome,5,3);
         goHomeAdmin.add( goAdmin,10,3);
-        sceneNavigationButton.getChildren().addAll(goHomeAdmin,goAdmin,goHome,btnGoAdmin,btnHome,btnGoHome);
+        sceneNavigationButton.getChildren().addAll(goHomeAdmin,goAdmin,goHome,btnGoAdmin,btnHome,btnGoHome,btnLogout);
 
     }
     // Homepage
